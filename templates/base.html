@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Мой блог{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- Навигационная панель -->
+    <nav class="navbar">
+        <a href="{{ url_for('home') }}">Главная (Home)</a>
+        <a href="{{ url_for('notes') }}">Дневник программиста</a>
+        
+        {% if session.get('token') %}
+            <!-- Показываем только авторизованным пользователям -->
+            <span class="user-info">👤 {{ session['username'] }}</span>
+            <a href="{{ url_for('logout') }}" class="logout-link">Выйти</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Вход</a>
+            <a href="{{ url_for('register') }}">Регистрация</a>
+        {% endif %}
+    </nav>
+
+    <!-- Flash-сообщения (общие для всех страниц) -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-container">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Основной контент страницы -->
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Подвал сайта -->
+    <footer>
+        <p>&copy; 2024 Мой блог. Все права защищены.</p>
+    </footer>
+
+</body>
+</html>
